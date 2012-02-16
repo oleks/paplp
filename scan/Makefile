@@ -1,9 +1,11 @@
 CC=nvcc
-CFLAGS=
 NAME=scan
 
-scan:
-	${CC} ${NAME}.cu -o ${NAME}
+scan: scan.cu
+	${CC} scan.cu -o ${NAME}
+
+debug: scan.cu
+	${CC} -g -G scan.cu -o ${NAME}
 
 run: scan
 	./${NAME}
