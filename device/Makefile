@@ -2,5 +2,10 @@ CC=nvcc
 CFLAGS=
 NAME=device
 
-all:
+device:
 	${CC} ${NAME}.cu -o ${NAME}
+
+run: device
+	${NAME}
+
+all: device
