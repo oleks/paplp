@@ -31,15 +31,11 @@ inline double firstNormalization(Problem* problem)
     for (uint32_t i = 0; i < problem->noOfVariables; ++i)
     {
       *c = *c / ( b[j] * d[i] );
-      printf("C: %e\n", *c);
       beta_j = MAX(beta_j, *c);
       c++;
     }
-    printf("betaj: %e\n", beta_j);
     beta = MIN(beta, beta_j);
   }
-
-  printf("beta: %e\n", beta);
 
   return beta;
 }
@@ -54,8 +50,6 @@ inline void secondNormalization(Problem *problem, double beta)
 
   double upperBound = ( beta * problem->noOfConstraints ) / problem->epsilon;
   double lowerBound = ( problem->epsilon * beta ) / problem->noOfConstraints;
-
-  printf("upper bound: %e; lower bound: %e\n", upperBound, lowerBound);
 
   for (uint32_t i = 0; i < noOfCoefficients; ++i, c++)
   {
@@ -83,14 +77,11 @@ void checkNormalization(Problem* problem)
     if (*c > 0)
     {
       b = MIN(b, *c);
-      printf("c>0: %e\n",*c);
     }
   }
 
   double ratio = t / b;
   double gamma = pow(problem->noOfConstraints, 2) / pow(problem->epsilon, 2);
-
-  printf("t/b vs. gamma = %e vs %e\n", ratio, gamma);
 }
 
 #undef GET_COEFFICIENTS
