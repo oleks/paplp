@@ -10,19 +10,46 @@ inline void secondNormalization(Problem* problem, double beta);
 
 void normalize(Problem* problem)
 {
+
+/* Performs normalization as described in \cite[4/(455)]{luby-nisan-93}.  It is
+ * recommended to have the article at hand as you review this code.
+ *
+ * \timeComplexity{O(firstNormalization) + O(secondNormalization)}
+ * \spaceComplexity{O(firstNormalization) + O(secondNormalization)}
+ */
+
+/* The normalization is 2-step.  First computing the $c'_{i,j}$ and $\beta$,
+ * and then $c''_{i,j}$.  This is expressed by the following function
+ * composition. */
+
   secondNormalization(problem, firstNormalization(problem));
 
-/* We need not set all b's to 1 as this will be superimposed by a change of the
- * problem type to NORMALIZED. */
+/* We will not be needing $b$'s as all of them are simply set to 1 by the
+ * normalization procedure.  This will be superimposed by a change of the
+ * problem type to NORMALIZED.  A similar statement applies to $d$'s and $z$'s,
+ * which effectively do not change, but theoretically become different (yet
+ * related) variables. */
 
   problem->type = NORMALIZED;
 }
 
 inline double firstNormalization(Problem* problem)
 {
+
+/* Let $c'_{i,j}={c_{i,j}\over b_j\cdot d_i$ and $\beta_j=max_i{c'_{i,j}}$ and
+ * $\beta=min_j{\beta_j}$.  This function replaces $c_{i,j}$ by $c'_{i,j}$ in
+ * the passed in structure and returns $\beta$. 
+ *
+ * \timeComplexity{O(m*n)}
+ * \where[m]{problem->noOfConstraints}
+ * \where[n]{problem->noOfVariables}
+ * \spaceComplexity{O(1)}
+ */
+
   double*  d = problem->objectiveCoefficients;
   double*  b = problem->constraintValues;
   double*  c = problem->constraintCoefficients;
+
 
   double beta = DBL_MAX;
   for (uint32_t j = 0; j < problem->noOfConstraints; ++j)
