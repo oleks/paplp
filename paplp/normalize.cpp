@@ -3,14 +3,14 @@
  * maximal values. */
 
 #include <math.h>
-/* Included for pow, needed when checking the normalization. */
+/* Included for pow, needed when \function{checkNormalization}. */
 
 #include <assert.h>
-/* The function that checks the normalization asserts the property that
- * $t/b\leq\gamma$ as described in \cite[4/(455)]{luby-nisan-93}. */
+/* \function{checkNormalization} asserts the property that $t/b\leq\gamma$ as
+ * described in \cite[4/(455)]{luby-nisan-93}. */
 
 #include "lib.h"
-/* Included for MIN/MAX.*/
+/* Included bceause of MIN/MAX definitions.*/
 
 #include "normalize.h"
 
