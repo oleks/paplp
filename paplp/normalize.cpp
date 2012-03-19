@@ -36,20 +36,17 @@ void normalize(Problem* problem)
 inline double firstNormalization(Problem* problem)
 {
 
-/* Let $c'_{i,j}={c_{i,j}\over b_j\cdot d_i$ and $\beta_j=max_i{c'_{i,j}}$ and
+/* Let $c'_{i,j}={c_{i,j}\over b_j\cdot d_i}$ and $\beta_j=max_i{c'_{i,j}}$ and
  * $\beta=min_j{\beta_j}$.  This function replaces $c_{i,j}$ by $c'_{i,j}$ in
  * the passed in structure and returns $\beta$. 
  *
- * \timeComplexity{O(m*n)}
- * \where[m]{problem->noOfConstraints}
- * \where[n]{problem->noOfVariables}
- * \spaceComplexity{O(1)}
+ * \timeComplexity{O(m*n)} \where[m]{problem->noOfConstraints}
+ * \where[n]{problem->noOfVariables} \spaceComplexity{O(1)}
  */
 
   double*  d = problem->objectiveCoefficients;
   double*  b = problem->constraintValues;
   double*  c = problem->constraintCoefficients;
-
 
   double beta = DBL_MAX;
   for (uint32_t j = 0; j < problem->noOfConstraints; ++j)
