@@ -1,8 +1,17 @@
 #include <float.h>
+/* Included for DBL_MAX and DBL_MIN. Used in order to compute minimal and
+ * maximal values. */
+
 #include <math.h>
-#include <stdio.h>
+/* Included for pow, needed when checking the normalization. */
+
+#include <assert.h>
+/* The function that checks the normalization asserts the property that
+ * $t/b\leq\gamma$ as described in \cite[4/(455)]{luby-nisan-93}. */
 
 #include "lib.h"
+/* Included for MIN/MAX.*/
+
 #include "normalize.h"
 
 inline double firstNormalization(Problem* problem);
@@ -106,6 +115,8 @@ void checkNormalization(Problem* problem)
 
   double ratio = t / b;
   double gamma = pow(problem->noOfConstraints, 2) / pow(problem->epsilon, 2);
+
+  assert(ratio <= gamma);
 }
 
 #undef GET_COEFFICIENTS
