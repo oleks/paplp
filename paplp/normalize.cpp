@@ -112,8 +112,9 @@ void checkNormalization(Problem* problem)
 /* Let $t = max_{i,j}\set{ c_{i,j} }$, $b = min_{i,j}\set{ c_{i,j} : c_{i,j} >
  * 0 }$, and $\gamma = { m^2 \over \epsilon^2 }$. Then, by
  * \cite[4/(455)]{luby-nisan-93}, ${ t \over b} \leq \gamma$ for any normalized
- * problem. This function compute $t$, $b$, and %\gamma% given a problem, and
- * asserts this property in the end.
+ * problem. This function computes $t$, $b$, and %\gamma% given a problem, and
+ * asserts for this property to hold. Also, this function checks the type field
+ * in the problem structure.
  *
  * \timeComplexity{O(m*n)} \where[m]{problem->noOfConstraints}
  * \where[n]{problem->noOfVariables} \spaceComplexity{O(1)}
@@ -137,6 +138,7 @@ void checkNormalization(Problem* problem)
   double gamma = pow(problem->noOfConstraints, 2) / pow(problem->epsilon, 2);
 
   assert(ratio <= gamma);
+  assert(problem->type == NORMALIZED);
 }
 
 #undef GET_COEFFICIENTS
