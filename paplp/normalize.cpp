@@ -79,6 +79,15 @@ inline double firstNormalization(Problem* problem)
 
 inline void secondNormalization(Problem *problem, double beta)
 {
+
+/* This part of the normalization limits $c'_{i,j}$ to be at most $\beta\cdot
+ * m\over \epsilon$ and let's small $c'_{i,j}$ be $0$, in particular, those
+ * that are $<\epsilon\cdot\beta\over m$.
+ *
+ * \timeComplexity{O(m*n)} \where[m]{problem->noOfConstraints}
+ * \where[n]{problem->noOfVariables} \spaceComplexity{O(1)}
+ */
+
   GET_COEFFICIENTS();
 
   double upperBound = ( beta * problem->noOfConstraints ) / problem->epsilon;
@@ -99,6 +108,16 @@ inline void secondNormalization(Problem *problem, double beta)
 
 void checkNormalization(Problem* problem)
 {
+
+/* Let $t = max_{i,j}\set{ c_{i,j} }$, $b = min_{i,j}\set{ c_{i,j} : c_{i,j} >
+ * 0 }$, and $\gamma = { m^2 \over \epsilon^2 }$. Then, by
+ * \cite[4/(455)]{luby-nisan-93}, ${ t \over b} \leq \gamma$. This property is
+ * asserted at the end of the function.
+ *
+ * \timeComplexity{O(m*n)} \where[m]{problem->noOfConstraints}
+ * \where[n]{problem->noOfVariables} \spaceComplexity{O(1)}
+ */
+
   GET_COEFFICIENTS();
 
   double t = DBL_MIN;
