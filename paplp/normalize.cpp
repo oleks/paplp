@@ -111,8 +111,9 @@ void checkNormalization(Problem* problem)
 
 /* Let $t = max_{i,j}\set{ c_{i,j} }$, $b = min_{i,j}\set{ c_{i,j} : c_{i,j} >
  * 0 }$, and $\gamma = { m^2 \over \epsilon^2 }$. Then, by
- * \cite[4/(455)]{luby-nisan-93}, ${ t \over b} \leq \gamma$. This property is
- * asserted at the end of the function.
+ * \cite[4/(455)]{luby-nisan-93}, ${ t \over b} \leq \gamma$ for any normalized
+ * problem. This function compute $t$, $b$, and %\gamma% given a problem, and
+ * asserts this property in the end.
  *
  * \timeComplexity{O(m*n)} \where[m]{problem->noOfConstraints}
  * \where[n]{problem->noOfVariables} \spaceComplexity{O(1)}
