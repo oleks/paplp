@@ -1,11 +1,12 @@
 CC=nvcc
 NAME=paplp
+FLAGS=-arch sm_13
 
-paplp: normalize.o paplp.cu
-	${CC} normalize.o ${NAME}.cu -o ${NAME}
+paplp: problem.o paplp.cu
+	${CC} ${FLAGS} problem.o ${NAME}.cu -o ${NAME}
 
-normalize.o: normalize.cpp
-	${CC} --compile normalize.cpp
+problem.o: problem.cpp problem.hpp
+	${CC} --compile problem.cpp
 
 debug: paplp.cu
 	${CC} -g -G ${NAME}.cu -o ${NAME}
