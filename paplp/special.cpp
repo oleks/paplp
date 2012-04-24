@@ -14,12 +14,15 @@
 #include "lib.h"
 /* Included bceause of MIN/MAX definitions.*/
 
-#include "special.h"
+#include "types.hpp"
+#include "problem.hpp"
 
-inline Data firstNormalization(Problem* problem);
-inline void secondNormalization(Problem* problem, Data beta);
+#include "special.hpp"
 
-void convertToSpecialForm(Problem *problem, SpecialProblem *specialProblem)
+inline Data firstNormalization(Problem const &problem, SpecialProblem const &specialProblem);
+inline void secondNormalization(SpecialProblem const &problem, Data beta);
+
+void convertToSpecialForm(Problem const &problem, SpecialProblem const &specialProblem)
 {
 /* Performs normalization as described in \cite[4/(455)]{luby-nisan-93}.
  *
@@ -31,7 +34,7 @@ void convertToSpecialForm(Problem *problem, SpecialProblem *specialProblem)
  * and then $c''_{i,j}$.  This is expressed by the following function
  * composition. */
 
-  secondNormalization(problem, firstNormalization(problem));
+  secondNormalization(problem, firstNormalization(problem, specialProblem));
 
 /* We will not be needing $b$'s as all of them are simply set to 1 by the
  * normalization procedure.  This will be superimposed by a change of the
@@ -40,7 +43,7 @@ void convertToSpecialForm(Problem *problem, SpecialProblem *specialProblem)
  * related) variables. */
 }
 
-inline Data firstNormalization(Problem* problem)
+inline Data firstNormalization(Problem const &problem, SpecialProblem const &specialProblem)
 {
 
 /* Let $c'_{i,j}={c_{i,j}\over b_j\cdot d_i}$ and $\beta_j=max_i{c'_{i,j}}$ and
@@ -55,19 +58,21 @@ inline Data firstNormalization(Problem* problem)
  * \assume{\length{problem->noOfVariables} > 0}
  */
 
-  Data*  d = problem->objectiveCoefficients;
-  Data*  b = problem->constraintsValues;
-  Data*  c = problem->constraintsCoefficients;
+  Data* d = problem.objective;
+  Data* b = problem.constraintBounds;
+  Data* c = problem.constraintMatrix;
+  Data* c_prime = specialProblem.constraintMatrix;
 
   Data beta = DATA_MAX;
-  for (size_t j = 0; j < problem->noOfConstraints; ++j)
+  for (size_t j = 0; j < problem.noOfConstraints; ++j)
   {
     Data beta_j = DATA_MIN;
-    for (size_t i = 0; i < problem->noOfVariables; ++i)
+    for (size_t i = 0; i < problem.noOfVariables; ++i)
     {
-      *c = *c / ( b[j] * d[i] );
-      beta_j = MAX(beta_j, *c);
+      *c_prime = *c / ( b[j] * d[i] );
+      beta_j = MAX(beta_j, *c_prime);
       c++;
+      c_prime++;
     }
     beta = MIN(beta, beta_j);
   }
@@ -76,10 +81,10 @@ inline Data firstNormalization(Problem* problem)
 }
 
 #define GET_COEFFICIENTS() \
-  Data *c = problem->constraintsCoefficients;\
-  size_t noOfCoefficients = problem->noOfConstraints * problem->noOfVariables;
+  Data *c = problem.constraintMatrix;\
+  size_t noOfCoefficients = problem.noOfConstraints * problem.noOfVariables;
 
-inline void secondNormalization(Problem *problem, Data beta)
+inline void secondNormalization(SpecialProblem const &problem, Data beta)
 {
 
 /* This part of the normalization floors large $c'_{i,j}$ to $\beta\cdot m\over
@@ -97,8 +102,8 @@ inline void secondNormalization(Problem *problem, Data beta)
 
   GET_COEFFICIENTS();
 
-  Data upperBound = ( beta * problem->noOfConstraints ) / problem->epsilon;
-  Data lowerBound = ( problem->epsilon * beta ) / problem->noOfConstraints;
+  Data upperBound = ( beta * problem.noOfConstraints ) / problem.epsilon;
+  Data lowerBound = ( problem.epsilon * beta ) / problem.noOfConstraints;
   Data t = DATA_MIN;
 
   for (size_t i = 0; i < noOfCoefficients; ++i, c++)
@@ -114,7 +119,7 @@ inline void secondNormalization(Problem *problem, Data beta)
     t = MAX(t, *c);
   }
 
-  c = problem->constraintsCoefficients;
+  c = problem.constraintMatrix;
 
   for (size_t i = 0; i < noOfCoefficients; ++i, c++)
   {
@@ -122,7 +127,7 @@ inline void secondNormalization(Problem *problem, Data beta)
   }
 }
 
-void ensureSpecialForm(SpecialProblem* problem)
+void ensureSpecialForm(SpecialProblem const &problem)
 {
 
 /* Let $t = max_{i,j}\set{ c_{i,j} }$, $b = min_{i,j}\set{ c_{i,j} : c_{i,j} >
@@ -151,7 +156,7 @@ void ensureSpecialForm(SpecialProblem* problem)
   }
 
   Data ratio = t / b;
-  Data gamma = pow(problem->noOfConstraints, 2) / pow(problem->epsilon, 2);
+  Data gamma = pow(problem.noOfConstraints, 2) / pow(problem.epsilon, 2);
 
   printf("ratio: %e, gamma: %e\n", ratio, gamma);
 
