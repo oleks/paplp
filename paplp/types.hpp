@@ -1,5 +1,4 @@
-#ifndef PAPLP_TYPES_HPP
-#define PAPLP_TYPES_HPP
+#pragma once
 
 #include <cstddef>
 using std::size_t;
@@ -24,4 +23,10 @@ typedef float Data;
 #define DATA_MIN (FLT_MIN)
 /* See discussion for \ref{comment:data-type-definition}. */
 
-#endif
+#include <thrust/host_vector.h>
+
+typedef thrust::host_vector<Data> HostVector;
+
+#include <thrust/device_vector.h>
+
+typedef thrust::device_vector<Data> DeviceVector;

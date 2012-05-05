@@ -1,5 +1,4 @@
-#ifndef PAPLP_PROBLEM_HPP
-#define PAPLP_PROBLEM_HPP
+#pragma once
 
 #include "types.hpp"
 
@@ -22,40 +21,33 @@ class ApproximationProblem
 {
 protected:
   ApproximationProblem(
-    const Data epsilon,
-    const size_t noOfVariables,
-    const size_t noOfConstraints);
+    const Data epsilon);
   ApproximationProblem(
     ApproximationProblem const &otherProblem);
 public:
   const Data epsilon;
-  const size_t noOfVariables;
-  const size_t noOfConstraints;
 };
 
 class Problem : public ApproximationProblem
 {
 public:
-  Data * const objective;
-  Data * const constraintMatrix;
-  Data * const constraintBounds;
+  HostVector &objective;
+  HostVector &constraintMatrix;
+  HostVector &constraintBounds;
   Problem(
     const Data epsilon,
-    const size_t noOfVariables,
-    const size_t noOfContraints,
-    Data * const objective,
-    Data * const constraintMatrix,
-    Data * const constraintBounds);
+    HostVector &objective,
+    HostVector &constraintMatrix,
+    HostVector &constraintBounds);
 };
 
 class SpecialProblem : public ApproximationProblem
 {
 public:
-  Data * const objective;
-  Data * const constraintMatrix;
+  HostVector objective;
+  HostVector constraintMatrix;
 
   SpecialProblem(Problem const &problem);
-  ~SpecialProblem();
+  size_t NoOfVariables(void);
+  size_t NoOfConstraints(void);
 };
-
-#endif
